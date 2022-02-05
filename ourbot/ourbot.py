@@ -14,129 +14,133 @@ class Bot:
         # phase = State.get_phase(self)
         moves = state.moves()
         hand = state.hand()
-        print (moves)
         
-        def phase_1():
 
-            
 
-            def check_marriage():
 
-                kings_and_queens = []
 
-                for card in hand:
-                    rank_of_the_card = util.get_rank(card)
-                    if rank_of_the_card == "Q" or rank_of_the_card == "K":
-                        kings_and_queens.append(card)
 
-                for [card1, card2] in kings_and_queens:
-                    if card1 is not None and card2 is not None:
-                        # Getpoints player 1 or not player 1's turn
-                        if util.get_points(1) < 26 or opponent_lead() == True:
-                            moves.remove(card1, card2)
-                        else:
-                            return [card1, card2]
+        #def check_marriage():
 
-            def opponent_lead():
-                if state.whose_turn == 2:
-                    return True
+            #kings_and_queens = []
 
-            def ourbot_lead():
-                if state.whose_turn == 1:
-                    return True
+            #for card in hand:
+                #rank_of_the_card = util.get_rank(card)
+                #if rank_of_the_card == "Q" or rank_of_the_card == "K":
+                    #kings_and_queens.append(card)
+
+            #for [card1, card2] in kings_and_queens:
+                 #if card1 is not None and card2 is not None:
+                    # Getpoints player 1 or not player 1's turn
+                    #if util.get_points(1) < 26 or opponent_lead() == True:
+                        #moves.remove(card1, card2)
+                    #else:
+                        #return [card1, card2]
+
+        def opponent_lead():
+            if state.whose_turn == 2:
+                return True
+
+        def ourbot_lead():
+            if state.whose_turn == 1:
+                return True
 
             # should maybe be outside of get_move?
             # don't need/maybe if we want to incoorporate the 'adjacent' cards strategy
-            def store_played_cards():
-                played_cards = []
-                played_cards += state.get_opponents_played_card()
-                played_cards += chosen_move
+        def store_played_cards():
+            played_cards = []
+            played_cards += state.get_opponents_played_card()
+            played_cards += chosen_move
 
-            def what_suit_is_trump():
-                suit_of_trump = state.get_trump_suit()
-                return suit_of_trump
+        def what_suit_is_trump():
+            suit_of_trump = state.get_trump_suit()
+            return suit_of_trump
 
-            def trump_cards_in_hand():
-                trump_cards_in_hand = []
-                for card in hand:
-                    if util.get_suit(card) == what_suit_is_trump():
-                        trump_cards_in_hand.append(card)
+        def trump_cards_in_hand():
+            trump_cards_in_hand = []
+            for card in hand:
+                if util.get_suit(card) == what_suit_is_trump():
+                    trump_cards_in_hand.append(card)
 
-            def play_non_trump_low_rank():
-                for card in moves:
-                    if util.get_suit(card) != what_suit_is_trump():
-                        chosen_move = None
-                        if util.get_rank(card) == 'A':
-                            chosen_move = card
-                        elif util.get_rank(card) == '10':
-                            chosen_move = card
-                        elif util.get_rank(card) == 'K':
-                            chosen_move = card
-                        elif util.get_rank(card) == 'Q':
-                            chosen_move = card
-                        elif util.get_rank(card) == 'J':
-                            chosen_move = card
-                        return chosen_move
-
-            def play_non_trump_high_rank():
-                for card in moves:
-                    if util.get_suit(card) != what_suit_is_trump():
-                        chosen_move = None
-                        if util.get_rank(card) == 'J':
-                            chosen_move = card
-                        elif util.get_rank(card) == 'Q':
-                            chosen_move = card
-                        elif util.get_rank(card) == 'K':
-                            chosen_move = card
-                        elif util.get_rank(card) == '10':
-                            chosen_move = card
-                        elif util.get_rank(card) == 'A':
-                            chosen_move = card
-                        return chosen_move
-
-            def opponent_leads_high_rank_non_trump():
-                chosen_move = None
-                for card in trump_cards_in_hand():
-                    chosen_move = card
-                    if util.get_rank(chosen_move) < util.get_rank(card):
+        def play_non_trump_low_rank():
+            for card in moves:
+                if util.get_suit(card) != what_suit_is_trump():
+                    chosen_move = None
+                    if util.get_rank(card) == 'A':
                         chosen_move = card
-                    else:
-                        chosen_move = play_non_trump_low_rank()
-                return chosen_move
+                    elif util.get_rank(card) == '10':
+                        chosen_move = card
+                    elif util.get_rank(card) == 'K':
+                        chosen_move = card
+                    elif util.get_rank(card) == 'Q':
+                        chosen_move = card
+                    elif util.get_rank(card) == 'J':
+                        chosen_move = card
+                    return chosen_move
 
-            def opponent_leads_low_rank_non_trump():
-                chosen_move = play_non_trump_high_rank()
-                return chosen_move
+        def play_non_trump_high_rank():
+            for card in moves:
+                if util.get_suit(card) != what_suit_is_trump():
+                    chosen_move = None
+                    if util.get_rank(card) == 'J':
+                            chosen_move = card
+                    elif util.get_rank(card) == 'Q':
+                            chosen_move = card
+                    elif util.get_rank(card) == 'K':
+                            chosen_move = card
+                    elif util.get_rank(card) == '10':
+                            chosen_move = card
+                    elif util.get_rank(card) == 'A':
+                            chosen_move = card
+                    return chosen_move
 
-            def opponent_leads_trump():
+        def opponent_leads_high_rank_non_trump():
+            chosen_move = None
+            for card in trump_cards_in_hand():
+                chosen_move = card
+                if util.get_rank(chosen_move) < util.get_rank(card):
+                    chosen_move = card
+                else:
+                    chosen_move = play_non_trump_low_rank()
+            return chosen_move
+
+            #TODO add if bot owns a card that can win the trick i.e (check if same suit, check if higher rank)
+        def opponent_leads_low_rank_non_trump():
+            chosen_move = play_non_trump_high_rank()
+            return chosen_move
+
+        def opponent_leads_trump():
+            chosen_move = play_non_trump_low_rank()
+            return chosen_move
+
+        def ourbout_leads():
+            if ourbot_lead() == True:
                 chosen_move = play_non_trump_low_rank()
                 return chosen_move
 
-            def ourbout_leads():
-                if ourbot_lead() == True:
-                    chosen_move = play_non_trump_low_rank()
-                    return chosen_move
-
-            check_marriage()
+        #check_marriage()
 
             # game logic phase 1
-            if opponent_lead() == True:
-                opponent_played = state.get_opponents_played_card()
-                if util.get_suit(opponent_played) != what_suit_is_trump():
-                    if util.get_rank(opponent_played) == "A" or util.get_rank(opponent_played) == "10":
-                        chosen_move = opponent_leads_high_rank_non_trump()
-                    else:
-                        chosen_move = opponent_leads_low_rank_non_trump()
+        if opponent_lead() == True:
+            opponent_played = state.get_opponents_played_card()
+            if util.get_suit(opponent_played) != what_suit_is_trump():
+                chosen_move = None
+                if util.get_rank(opponent_played) == "A" or util.get_rank(opponent_played) == "10":
+                    chosen_move = opponent_leads_high_rank_non_trump()
+                    if chosen_move == None:
+                        play_non_trump_low_rank()
                 else:
-                    chosen_move = opponent_leads_trump()
+                    chosen_move = opponent_leads_low_rank_non_trump()
             else:
-                chosen_move = ourbout_leads()
+                chosen_move = opponent_leads_trump()
+        else:
+            chosen_move = ourbout_leads()
 
-            if chosen_move is not None:
-                print (moves)
-                return chosen_move
-            else:
-                return random.choice(moves)
+        if chosen_move is not None:
+
+            return chosen_move
+        else:
+            return random.choice(moves)
 
     phase = State.get_phase
     # if phase == 1:
